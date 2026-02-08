@@ -1,0 +1,37 @@
+{
+  "name": "town-square",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "bun@1.2.4",
+  "scripts": {
+    "dev:fisherman": "cd apps/fisherman && bun run dev",
+    "dev:amnesiac:client": "cd apps/amnesiac-client && bun run dev",
+    "dev:amnesiac:server": "cd apps/amnesiac-server && bun run dev",
+    "dev:amnesiac:all": "concurrently \"bun run dev:amnesiac:client\" \"bun run dev:amnesiac:server\"",
+    "build:amnesiac:client": "cd apps/amnesiac-client && bun run build",
+    "build:amnesiac:server": "cd apps/amnesiac-server && bun run build",
+    "build:amnesiac:shared": "cd packages/amnesiac-shared && bun run build",
+    "build:amnesiac:all": "bun run build:amnesiac:client && bun run build:amnesiac:server",
+    "verify:amnesiac:server": "bun run build:amnesiac:server",
+    "verify:amnesiac:client": "bun run build:amnesiac:client",
+    "verify:fisherman": "cd apps/fisherman && sh -c 'bun run start & pid=$!; sleep 1; curl -fsS http://localhost:3000/health > /dev/null; status=$?; kill $pid; wait $pid 2>/dev/null; exit $status'",
+    "verify:all": "bun run verify:amnesiac:client && bun run verify:amnesiac:server && bun run verify:fisherman",
+    "format:amnesiac": "cd apps/amnesiac-client && bun run format && cd ../amnesiac-server && bun run format",
+    "format:amnesiac:fix": "cd apps/amnesiac-client && bun run format:fix && cd ../amnesiac-server && bun run format:fix",
+    "lint:amnesiac": "cd apps/amnesiac-client && bun run lint && cd ../amnesiac-server && bun run lint",
+    "lint:amnesiac:fix": "cd apps/amnesiac-client && bun run lint:fix && cd ../amnesiac-server && bun run lint:fix",
+    "clean": "rm -rf apps/*/node_modules apps/*/dist packages/*/node_modules packages/*/dist node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  }
+}
