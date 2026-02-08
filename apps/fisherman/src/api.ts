@@ -159,6 +159,54 @@ const swaggerHtml = `<!doctype html>
       rel="stylesheet"
       href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css"
     />
+    <style>
+      @media (prefers-color-scheme: dark) {
+        body,
+        .swagger-ui {
+          background: #0f172a;
+          color: #e2e8f0;
+        }
+        .swagger-ui .scheme-container {
+          background: #0b1220;
+          box-shadow: none;
+        }
+        .swagger-ui .opblock {
+          background: #111827;
+          border-color: #1f2937;
+        }
+        .swagger-ui .opblock-tag {
+          color: #e2e8f0;
+          border-bottom-color: #1f2937;
+        }
+        .swagger-ui .opblock-summary-description,
+        .swagger-ui .opblock-description-wrapper,
+        .swagger-ui .opblock-title_normal {
+          color: #e2e8f0;
+        }
+        .swagger-ui .info .title,
+        .swagger-ui .info .base-url,
+        .swagger-ui .info p {
+          color: #e2e8f0;
+        }
+        .swagger-ui .parameter__name,
+        .swagger-ui .parameter__type,
+        .swagger-ui .response-col_status,
+        .swagger-ui .response-col_description {
+          color: #e2e8f0;
+        }
+        .swagger-ui table thead tr th,
+        .swagger-ui table tbody tr td {
+          color: #e2e8f0;
+        }
+        .swagger-ui select,
+        .swagger-ui input[type="text"],
+        .swagger-ui textarea {
+          background: #111827;
+          color: #e2e8f0;
+          border-color: #334155;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="swagger-ui"></div>
@@ -237,6 +285,13 @@ const server = Bun.serve({
 
     if (pathname === "/openapi.json") {
       return jsonResponse(openApiSpec);
+    }
+
+    if (pathname === "/") {
+      return new Response(null, {
+        status: 302,
+        headers: { location: "/docs" },
+      });
     }
 
     if (pathname === "/docs") {

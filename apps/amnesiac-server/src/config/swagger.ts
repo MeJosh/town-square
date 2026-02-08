@@ -205,17 +205,29 @@ const specs = swaggerJSDoc(options);
 export const setupSwagger = (app: Express): void => {
   // Swagger UI setup
   app.use(
-    '/api-docs',
+    '/docs',
     ...swaggerUi.serve,
     swaggerUi.setup(specs, {
       explorer: true,
-      customCss: '.swagger-ui .topbar { display: none }',
+      customCss:
+        '.swagger-ui .topbar { display: none }\n' +
+        '@media (prefers-color-scheme: dark) {\n' +
+        '  body, .swagger-ui { background: #0f172a; color: #e2e8f0; }\n' +
+        '  .swagger-ui .scheme-container { background: #0b1220; box-shadow: none; }\n' +
+        '  .swagger-ui .opblock { background: #111827; border-color: #1f2937; }\n' +
+        '  .swagger-ui .opblock-tag { color: #e2e8f0; border-bottom-color: #1f2937; }\n' +
+        '  .swagger-ui .opblock-summary-description, .swagger-ui .opblock-description-wrapper, .swagger-ui .opblock-title_normal { color: #e2e8f0; }\n' +
+        '  .swagger-ui .info .title, .swagger-ui .info .base-url, .swagger-ui .info p { color: #e2e8f0; }\n' +
+        '  .swagger-ui .parameter__name, .swagger-ui .parameter__type, .swagger-ui .response-col_status, .swagger-ui .response-col_description { color: #e2e8f0; }\n' +
+        '  .swagger-ui table thead tr th, .swagger-ui table tbody tr td { color: #e2e8f0; }\n' +
+        '  .swagger-ui select, .swagger-ui input[type="text"], .swagger-ui textarea { background: #111827; color: #e2e8f0; border-color: #334155; }\n' +
+        '}\n',
       customSiteTitle: 'Amnesiac API Documentation',
     })
   );
 
   // Raw OpenAPI JSON
-  app.get('/api-docs.json', (req, res) => {
+  app.get('/docs/openapi.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(specs);
   });

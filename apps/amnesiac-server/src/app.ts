@@ -31,6 +31,12 @@ app.use(helmet({
 app.use(morgan('combined')); // Request logging
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies// Routes
+
+// Redirect base URL to API docs
+app.get('/', (_req, res) => {
+  res.redirect(302, '/docs');
+});
+
 app.use(routes);
 
 // Setup Swagger documentation
