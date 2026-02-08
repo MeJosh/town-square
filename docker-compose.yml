@@ -1,0 +1,10 @@
+name: town-square
+
+services:
+  fisherman:
+    build:
+      context: ./apps/fisherman
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/fisherman/data:/app/data

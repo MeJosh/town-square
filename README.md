@@ -22,3 +22,9 @@ cd apps/fisherman
 docker build -t fisherman .
 docker run --rm -p 3000:3000 fisherman
 ```
+
+## Docker Compose
+
+```bash
+docker compose up --build
+```

@@ -6,7 +6,7 @@ COPY package.json bun.lockb* ./
 RUN bun install --production
 
 COPY src ./src
-COPY data ./data
+RUN mkdir -p /app/data
 
 EXPOSE 3000
 
