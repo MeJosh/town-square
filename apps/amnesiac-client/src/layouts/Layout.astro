@@ -1,0 +1,99 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Blood on the Clocktower companion app' } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href={`${import.meta.env.BASE_URL}/favicon.ico`}
+    />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href={`${import.meta.env.BASE_URL}/favicon.ico`}
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script is:inline>
+      // Check for saved theme preference or default to system preference
+      const theme =
+        localStorage.getItem('theme') ??
+        (window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light');
+
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+  </head>
+  <body
+    class="h-full bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100"
+  >
+    <header class="border-b border-gray-200 dark:border-gray-700">
+      <nav
+        class="container mx-auto flex items-center justify-between px-4 py-4"
+      >
+        <div class="flex items-center space-x-8">
+          <h1 class="text-xl font-bold">
+            <a
+              href={`${import.meta.env.BASE_URL}`}
+              class="hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              Amnesiac
+            </a>
+          </h1>
+          <div class="hidden space-x-6 md:flex">
+            <a
+              href={`${import.meta.env.BASE_URL}`}
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              Scripts
+            </a>
+            <a
+              href={`${import.meta.env.BASE_URL}/admin`}
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              Admin
+            </a>
+          </div>
+        </div>
+        <div id="theme-toggle-container">
+          <!-- Theme toggle will be mounted here -->
+        </div>
+      </nav>
+    </header>
+    <slot />
+
+    <!-- Mount ThemeToggle component -->
+    <script>
+      import ThemeToggle from '../components/ThemeToggle.vue';
+      import { createApp } from 'vue';
+
+      // Wait for DOM to be ready
+      document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('theme-toggle-container');
+        if (container) {
+          const app = createApp(ThemeToggle);
+          app.mount(container);
+        }
+      });
+    </script>
+  </body>
+</html>

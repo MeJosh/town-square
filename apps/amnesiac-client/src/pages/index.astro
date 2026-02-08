@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import LandingPageLoader from '../components/LandingPageLoader.vue';
+
+// No server-side health checks - everything is handled client-side now
+// This improves loading states and debugging capabilities
+---
+
+<Layout title="Amnesiac - Blood on the Clocktower">
+  <LandingPageLoader client:load />
+</Layout>

@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SessionLoader from '../../components/SessionLoader.vue';
+
+export async function getStaticPaths() {
+  // For now, we'll return an empty array since we're using SSR-like behavior
+  // In production, you might want to pre-generate some paths
+  return [];
+}
+
+const { sessionId } = Astro.params;
+
+// All health checking and session loading is now handled client-side
+// This provides better loading states and error debugging
+---
+
+<Layout title={`Session ${sessionId} - Amnesiac`}>
+  <SessionLoader sessionId={sessionId} client:load />
+</Layout>

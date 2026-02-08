@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Admin Dashboard - Amnesiac">
+  <main class="container mx-auto max-w-6xl px-4 py-8">
+    <h1 class="mb-8 text-3xl font-bold text-gray-900 dark:text-white">
+      Admin Dashboard
+    </h1>
+
+    <div id="admin-dashboard">
+      <!-- Vue component will be mounted here -->
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { pinia } from '../stores/index';
+  import AdminDashboard from '../components/AdminDashboard.vue';
+  import { createApp } from 'vue';
+
+  const app = createApp(AdminDashboard);
+  app.use(pinia);
+  app.mount('#admin-dashboard');
+</script>
