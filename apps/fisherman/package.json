@@ -1,0 +1,17 @@
+{
+  "name": "fisherman",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "bun run src/scraper.ts --data-dir data",
+    "clean": "bun run src/clean.ts --data-dir data",
+    "start": "bun run src/api.ts",
+    "dev": "bun --watch src/api.ts"
+  },
+  "dependencies": {
+    "cheerio": "1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "typescript": "5.4.2"
+  }
+}
