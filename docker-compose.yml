@@ -1,25 +1,36 @@
 name: town-square
 
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - fisherman
+      - amnesiac-server
+      - amnesiac-client
+
   fisherman:
     build:
       context: ./apps/fisherman
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     volumes:
       - ./apps/fisherman/data:/app/data
 
   amnesiac-server:
     build:
       context: ./apps/amnesiac-server
-    ports:
-      - "3001:3000"
+    expose:
+      - "3000"
 
   amnesiac-client:
     build:
       context: ./apps/amnesiac-client
       args:
-        PUBLIC_API_URL: http://localhost:3001
-        PUBLIC_API_BASE_URL: http://localhost:3001/api
-    ports:
-      - "4321:4321"
+        PUBLIC_API_URL: http://localhost/amnesiac/api
+        PUBLIC_API_BASE_URL: http://localhost/amnesiac/api
+    expose:
+      - "4321"

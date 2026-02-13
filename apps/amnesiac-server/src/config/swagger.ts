@@ -23,8 +23,12 @@ const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
+        url: 'http://localhost/amnesiac/api',
+        description: 'Development server (via proxy)',
+      },
+      {
         url: 'http://localhost:3000',
-        description: 'Development server',
+        description: 'Development server (direct)',
       },
       {
         url: 'http://64.225.49.223:3000',

@@ -46,7 +46,10 @@ const openApiSpec = {
     title: "Blood on the Clocktower API",
     version: "1.0.0",
   },
-  servers: [{ url: "http://localhost:3000" }],
+  servers: [
+    { url: "http://localhost/fisherman/api", description: "Development (via proxy)" },
+    { url: "http://localhost:3000", description: "Development (direct)" }
+  ],
   paths: {
     "/health": {
       get: {
@@ -213,7 +216,7 @@ const swaggerHtml = `<!doctype html>
     <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
     <script>
       window.ui = SwaggerUIBundle({
-        url: "/openapi.json",
+        url: "./openapi.json",
         dom_id: "#swagger-ui",
       });
     </script>
