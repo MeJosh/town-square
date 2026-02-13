@@ -117,11 +117,13 @@ import { ref, computed, onMounted } from 'vue';
 import ScriptSection from './ScriptSection.vue';
 
 interface Character {
-  id: string;
   name: string;
-  description: string;
-  icon: string;
-  section: 'townsfolk' | 'outsiders' | 'minions' | 'demons';
+  slug: string;
+  characterType?: string | null;
+  edition?: string | null;
+  ability?: string | null;
+  iconPath?: string | null;
+  sourceUrl?: string | null;
 }
 
 interface SessionData {
@@ -164,20 +166,26 @@ const totalCharacters = computed(() => {
   );
 });
 
-// Helper function to create placeholder characters
-const createPlaceholderCharacter = (
-  id: string,
-  section: 'townsfolk' | 'outsiders' | 'minions' | 'demons'
-): Character => ({
-  id,
-  name: id.charAt(0).toUpperCase() + id.slice(1),
-  description: `You start knowing 1 good player. Each day, privately guess what it is; you learn how accurate you are.`,
-  icon: 'https://wiki.bloodontheclocktower.com/images/2/26/Icon_amnesiac.png',
-  section,
-});
+// API configuration
+const FISHERMAN_API_BASE = import.meta.env.PUBLIC_FISHERMAN_API_URL || 'http://localhost/fisherman/api';
+
+// Helper function to fetch character data from Fisherman API
+const fetchCharacterData = async (slug: string): Promise<Character | null> => {
+  try {
+    const response = await fetch(`${FISHERMAN_API_BASE}/characters/${slug}`);
+    if (!response.ok) {
+      console.warn(`Character not found: ${slug}`);
+      return null;
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(`Failed to fetch character ${slug}:`, err);
+    return null;
+  }
+};
 
 // Process script data into character sections
-const processScriptData = (data: unknown[]) => {
+const processScriptData = async (data: unknown[]) => {
   if (!Array.isArray(data) || data.length === 0) return;
 
   // Extract meta information
@@ -195,27 +203,30 @@ const processScriptData = (data: unknown[]) => {
   minions.value = [];
   demons.value = [];
 
-  // Organize characters by section (placeholder implementation)
-  // This assumes the script format where characters are ordered by type
-  const characters = data.filter(
-    (item: unknown, index: number) => item !== scriptMeta && index > 0
+  // Get character slugs (filter out meta and non-string items)
+  const characterSlugs = data.filter(
+    (item: unknown) => typeof item === 'string'
+  ) as string[];
+
+  // Fetch character data from Fisherman API
+  const characterPromises = characterSlugs.map((slug) =>
+    fetchCharacterData(slug)
+  );
+  const characters = (await Promise.all(characterPromises)).filter(
+    (char): char is Character => char !== null
   );
 
-  characters.forEach((id: unknown, index: number) => {
-    if (typeof id === 'string') {
-      if (index >= 0 && index <= 11) {
-        // First 12 are townsfolk
-        townsfolk.value.push(createPlaceholderCharacter(id, 'townsfolk'));
-      } else if (index >= 12 && index <= 15) {
-        // Next 4 are outsiders
-        outsiders.value.push(createPlaceholderCharacter(id, 'outsiders'));
-      } else if (index >= 16 && index <= 19) {
-        // Next 4 are minions
-        minions.value.push(createPlaceholderCharacter(id, 'minions'));
-      } else {
-        // Rest are demons
-        demons.value.push(createPlaceholderCharacter(id, 'demons'));
-      }
+  // Organize characters by type
+  characters.forEach((character) => {
+    const type = character.characterType?.toLowerCase();
+    if (type === 'townsfolk') {
+      townsfolk.value.push(character);
+    } else if (type === 'outsider') {
+      outsiders.value.push(character);
+    } else if (type === 'minion') {
+      minions.value.push(character);
+    } else if (type === 'demon') {
+      demons.value.push(character);
     }
   });
 };
@@ -238,7 +249,7 @@ const fetchScript = async () => {
 
     const data = await response.json();
     scriptData.value = data;
-    processScriptData(data);
+    await processScriptData(data);
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error occurred';
     console.error('Failed to fetch script data:', err);

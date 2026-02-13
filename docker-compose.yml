@@ -32,5 +32,6 @@ services:
       args:
         PUBLIC_API_URL: http://localhost/amnesiac/api
         PUBLIC_API_BASE_URL: http://localhost/amnesiac/api
+        PUBLIC_FISHERMAN_API_URL: http://localhost/fisherman/api
     expose:
       - "4321"
